@@ -1,5 +1,7 @@
 import java.io.*;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class Challange3 {
     public static void main(String[] args) throws FileNotFoundException {
@@ -26,7 +28,7 @@ public class Challange3 {
                 if (pilihan == 1) {
                     List<Integer> nilai = getValue(file);
                     if (nilai.size() > 0) {
-                        HashMap<Integer, Integer> freq = findFreq(nilai);
+                        Map<Integer, Integer> freq = findFreq(nilai);
                         menuAtas();
                         writeModus(freq);
                         System.out.println("File telah di generate di D:/file_challange_2" +
@@ -72,7 +74,7 @@ public class Challange3 {
                 } else if (pilihan == 3) {
                     List<Integer> nilai = getValue(file);
                     if (nilai.size() > 0) {
-                        HashMap<Integer, Integer> freq = findFreq(nilai);
+                        Map<Integer, Integer> freq = findFreq(nilai);
                         writeModus(freq);
 
                         double average = findAverage(nilai);
@@ -129,7 +131,6 @@ public class Challange3 {
                     }
                 }
 
-
             }
 
         } catch (FileNotFoundException e) {
@@ -141,57 +142,75 @@ public class Challange3 {
     }
 
     public static double findAverage(List<Integer> nilaiArr) {
-        int hasil = 0;
-        for (int n : nilaiArr
-        ) {
-            hasil += n;
-        }
-//        return (double) hasil / nilaiArr.size();
-        String duaKoma = String.format("%.2f", (double) hasil / nilaiArr.size());
-        return Double.parseDouble(duaKoma);
+
+//        int hasil = 0;
+//        for (int n : nilaiArr
+//        ) {
+//            hasil += n;
+//        }
+////        return (double) hasil / nilaiArr.size();
+//        String duaKoma = String.format("%.2f", (double) hasil / nilaiArr.size());
+//        return Double.parseDouble(duaKoma);
+        return nilaiArr.stream().collect(Collectors.averagingDouble(n -> n));
+
+
     }
 
-    public static HashMap<Integer, Integer> findFreq(List<Integer> arr) {
+    public static Map<Integer, Integer> findFreq(List<Integer> arr) {
 
-        HashMap<Integer, Integer> hm = null;
-        try {
-            hm = new HashMap<>();
-
-            for (Integer nilai : arr) {
-                if (hm.get(nilai) != null) {
-                    hm.put(nilai, hm.get(nilai) + 1);
-
-                } else {
-                    hm.put(nilai, 1);
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Error");
-        }
-
-        return hm;
+//        HashMap<Integer, Integer> hm = null;
+//        try {
+//            hm = new HashMap<>();
+//
+//            for (Integer nilai : arr) {
+//                if (hm.get(nilai) != null) {
+//                    hm.put(nilai, hm.get(nilai) + 1);
+//
+//                } else {
+//                    hm.put(nilai, 1);
+//                }
+//            }
+//        } catch (Exception e) {
+//            System.out.println("Error");
+//        }
+//
+//        return hm;
+        Map<Integer, Integer> freq = arr.stream()
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.summingInt(n -> 1)));
+        return freq;
     }
 
     public static int findModus(List<Integer> arr) {
-        HashMap<Integer, Integer> hm = new HashMap<>();
-        int max = 1;
-        int max_value = 0;
+//        HashMap<Integer, Integer> hm = new HashMap<>();
+//        int max = 1;
+//        int max_value = 0;
+//
+//        for (Integer nilai : arr) {
+//            if (hm.get(nilai) != null) {
+//                int jumlah = hm.get(nilai);
+//                jumlah++;
+//                hm.put(nilai, hm.get(nilai) + 1);
+//
+//                if (jumlah > max) {
+//                    max = jumlah;
+//                    max_value = nilai;
+//                }
+//            } else {
+//                hm.put(nilai, 1);
+//            }
+//        }
+//        return max_value;
 
-        for (Integer nilai : arr) {
-            if (hm.get(nilai) != null) {
-                int jumlah = hm.get(nilai);
-                jumlah++;
-                hm.put(nilai, hm.get(nilai) + 1);
+        Map<Integer, Integer> freq = arr.stream()
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.summingInt(n -> 1)));
 
-                if (jumlah > max) {
-                    max = jumlah;
-                    max_value = nilai;
-                }
-            } else {
-                hm.put(nilai, 1);
-            }
-        }
-        return max_value;
+        int max = freq.entrySet()
+                .stream()
+                .max((e1, e2) -> e1.getValue() > e2.getValue() ? 1 : 0)
+                .get().getKey();
+
+        return max;
+
     }
 
     public static int findMedian(List<Integer> arr) {
@@ -225,7 +244,7 @@ public class Challange3 {
         }
     }
 
-    public static void writeModus(HashMap<Integer, Integer> freq) {
+    public static void writeModus(Map<Integer, Integer> freq) {
         try {
             File file = new File("D:/file_challange_2/data_sekolah_modus.txt");
 

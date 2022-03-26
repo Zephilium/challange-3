@@ -2,6 +2,7 @@ import org.junit.jupiter.api.*;
 
 import java.io.FileNotFoundException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Challange3Test {
     String file;
@@ -16,23 +17,31 @@ public class Challange3Test {
     }
 
     @Test
-    @DisplayName("Positive Test Case")
+    @DisplayName("Positive Test Data")
     void positiveTest() throws FileNotFoundException {
 
-//        Find Data
         Assertions.assertEquals(data, Challange3.getValue(file));
 
-//        Average
-        double sum = 0;
-        for (int a : data) {
-            sum += a;
-        }
 
-        String duaKoma = String.format("%.2f", sum / data.size());
-        double avg = Double.parseDouble(duaKoma);
+    }
+
+    @Test
+    @DisplayName("Positive Test Average")
+    void testAverage() {
+//        double sum = 0;
+//        for (int a : data) {
+//            sum += a;
+//        }
+//
+//        String duaKoma = String.format("%.2f", sum / data.size());
+//        double avg = Double.parseDouble(duaKoma);
+        double avg = data.stream().collect(Collectors.averagingDouble(n -> n));
         Assertions.assertEquals(avg, Challange3.findAverage(data));
+    }
 
-//        Median
+    @Test
+    @DisplayName("Positive Test Median")
+    void testMedian() {
         Collections.sort(data);
 
         double median;
@@ -42,8 +51,11 @@ public class Challange3Test {
             median = (double) data.get(data.size() / 2);
         median = (int) median;
         Assertions.assertEquals(median, Challange3.findMedian(data));
+    }
 
-//        Modus
+    @Test
+    @DisplayName("Positive Test Modus")
+    void testModus() {
         int max = 1;
         int max_value = 0;
         HashMap<Integer, Integer> hm = new HashMap<>();
@@ -61,7 +73,6 @@ public class Challange3Test {
         }
 
         Assertions.assertEquals(max_value, Challange3.findModus(data));
-
     }
 
     @Test
